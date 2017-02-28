@@ -2,17 +2,20 @@
 extern crate gfx;
 extern crate gfx_window_glutin;
 extern crate glutin;
+extern crate image;
 
 use gfx::traits::FactoryExt;
 use gfx::Device;
+
+mod resource;
 
 pub type ColorFormat = gfx::format::Rgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
 
 gfx_defines! {
     vertex Vertex {
-        pos: [f32; 4] = "a_Pos",
-        color: [f32; 3] = "a_Color",
+        pos: [f32; 3] = "a_Pos",
+        uv: [f32; 2] = "a_Uv",
     }
 
     constant Transform {
@@ -22,6 +25,7 @@ gfx_defines! {
     pipeline pipe {
         vbuf: gfx::VertexBuffer<Vertex> = (),
         transform: gfx::ConstantBuffer<Transform> = "Transform",
+        tex: gfx::TextureSampler<[f32; 4]> = "t_Texture",
         out: gfx::RenderTarget<ColorFormat> = "Target0",
     }
 }
@@ -44,9 +48,9 @@ pub fn main() {
     let mut encoder: gfx::Encoder<_, _> = factory.create_command_buffer().into();
 
     const TRIANGLE: [Vertex; 3] = [
-        Vertex { pos: [ -0.5, -0.5, 0.0, 0.0 ], color: [1.0, 0.0, 0.0] },
-        Vertex { pos: [  0.5, -0.5, 0.0, 0.0 ], color: [0.0, 1.0, 0.0] },
-        Vertex { pos: [  0.0, -0.5, 0.0, 0.0 ], color: [0.0, 0.0, 1.0] },
+        Vertex { pos: [ -0.5, -0.5, 0.0 ], uv: [0.0, 0.0] },
+        Vertex { pos: [  0.0,  0.5, 0.0 ], uv: [0.5, 1.0] },
+        Vertex { pos: [  0.5, -0.5, 0.0 ], uv: [1.0, 0.0] },
     ];
 
     const TRANSFORM: Transform = Transform {
@@ -58,9 +62,12 @@ pub fn main() {
 
     let (vertex_buffer, slice) = factory.create_vertex_buffer_with_slice(&TRIANGLE, ());
     let transform_buffer = factory.create_constant_buffer(1);
+    let sampler = factory.create_sampler_linear();
+    let texture = resource::gfx_load_texture(&mut factory);
     let data = pipe::Data {
         vbuf: vertex_buffer,
         transform: transform_buffer,
+        tex: (texture, sampler),
         out: main_color,
     };
 
