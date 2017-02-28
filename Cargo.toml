@@ -1,6 +1,10 @@
 [package]
 name = "simulation"
 version = "0.1.0"
-authors = ["Keringar <git@keringar.xyz>"]
+authors = ["keringar <git@keringar.xyz>"]
 
 [dependencies]
+gfx = "0.14"
+gfx_device_gl = "0.13"
+glutin = "0.7"
+gfx_window_glutin = "0.14"
