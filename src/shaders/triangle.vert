@@ -1,15 +1,14 @@
 #version 150 core
 
-in vec4 a_Pos;
-in vec2 a_Uv;
+in vec3 a_Pos;
 
-out vec2 v_Uv;
-
-uniform Transform {
-    mat4 u_Transform;
+uniform Locals {
+    mat4 u_Model;
+    mat4 u_View;
+    mat4 u_Proj;
 };
 
 void main() {
-    v_Uv = a_Uv;
-    gl_Position = a_Pos * u_Transform;
+    gl_Position = u_Proj * u_View * u_Model * vec4(a_Pos, 1.0);
+    gl_ClipDistance[0] = 1.0;
 }
