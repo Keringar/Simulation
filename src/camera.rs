@@ -26,7 +26,9 @@ impl<'a> Camera<'a> {
     }
 
     pub fn update_view(&mut self) {
-        let target_position = self.position + nalgebra::Vector3::new(2.0, 0.0, 2.0);
+        println!("{}", self.position);
+        let target_position = self.position + nalgebra::Vector3::new(-3.0, -3.0, -3.0);
+        println!("{}", target_position);
         self.view_matrix = nalgebra::Isometry3::look_at_rh(&self.position, &target_position, &nalgebra::Vector3::y()).to_homogeneous().into();
     }
 

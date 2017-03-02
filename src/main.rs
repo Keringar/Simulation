@@ -85,7 +85,7 @@ pub fn main() {
 
         encoder.update_constant_buffer(&data.locals, &locals);
         encoder.clear(&data.out_color, [0.0 ,0.0, 0.0, 1.0]);
-        //encoder.clear_depth(&data.out_depth, 1.0);
+        encoder.clear_depth(&data.out_depth, 1.0);
         encoder.draw(&slice, &pso, &data);
         encoder.flush(&mut device);
 
